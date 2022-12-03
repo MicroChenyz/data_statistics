@@ -57,8 +57,6 @@ func getAllTmUser() ([]model.TmUserModel, error) {
 // modifyTmUser() 修改暂存用户信息操作
 func modifyTmUser(r *http.Request) error {
 	action, data, err := GetAction(r)
-	fmt.Println(action)
-	fmt.Println(data)
 	if err != nil {
 		return err
 	}

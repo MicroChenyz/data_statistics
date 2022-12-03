@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -16,13 +15,20 @@ var dbInstance *gorm.DB
 func Init() error {
 
 	source := "%s:%s@tcp(%s)/%s?readTimeout=1500ms&writeTimeout=1500ms&charset=utf8&loc=Local&&parseTime=true"
-	user := os.Getenv("MYSQL_USERNAME")
-	pwd := os.Getenv("MYSQL_PASSWORD")
-	addr := os.Getenv("MYSQL_ADDRESS")
-	dataBase := os.Getenv("MYSQL_DATABASE")
-	if dataBase == "" {
-		dataBase = "data_statistics"
-	}
+	//user := os.Getenv("MYSQL_USERNAME")
+	//pwd := os.Getenv("MYSQL_PASSWORD")
+	//addr := os.Getenv("MYSQL_ADDRESS")
+	//dataBase := os.Getenv("MYSQL_DATABASE")
+	//if dataBase == "" {
+	//	dataBase = "data_statistics"
+	//}
+
+	// 本地测试
+	user := "root"
+	pwd := "cyz990604!"
+	addr := "sh-cynosdbmysql-grp-k6wmd5zs.sql.tencentcdb.com:25584"
+	dataBase := "data_statistics"
+
 	source = fmt.Sprintf(source, user, pwd, addr, dataBase)
 	fmt.Println("start init mysql with ", source)
 

@@ -21,13 +21,19 @@ func GetAction(r *http.Request) (string, string, error) {
 		return "", "", err
 	}
 	defer r.Body.Close()
-
 	action, ok := body["action"]
 	data := body["data"]
 	if !ok {
 		return "", "", fmt.Errorf("缺少 action 参数")
 	}
+	actionMsg := fmt.Sprintf("%v", action)
+	if body == nil {
+		return actionMsg, "", nil
+	}
 
-	return action.(string), data.(string), nil
+	dataType, _ := json.Marshal(data)
+	dataString := string(dataType)
+
+	return actionMsg, dataString, nil
 
 }

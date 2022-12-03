@@ -56,15 +56,16 @@ func getAllTmUser() ([]model.TmUserModel, error) {
 
 // modifyTmUser() 修改暂存用户信息操作
 func modifyTmUser(r *http.Request) error {
-	action, err := GetAction(r)
+	action, data, err := GetAction(r)
 	fmt.Println(action)
+	fmt.Println(data)
 	if err != nil {
 		return err
 	}
 	if action == "add" {
-		err = addOneTmUser(r)
+		err = addOneTmUser(r, data)
 	} else if action == "delete" {
-		err = deleteOneTmUser(r)
+		err = deleteOneTmUser(r, data)
 	} else {
 		err = fmt.Errorf("参数 action : %s 错误", action)
 	}
@@ -74,34 +75,24 @@ func modifyTmUser(r *http.Request) error {
 }
 
 // addOneTmUser() 添加一条暂存用户信息
-func addOneTmUser(r *http.Request) error {
-	data, err := GetData(r)
-	fmt.Println(data)
-	if err != nil {
-		return err
-	}
+func addOneTmUser(r *http.Request, data string) error {
 	tmUser := model.TmUserModel{}
 	if err := json.Unmarshal([]byte(data), &tmUser); err != nil {
 		return err
 	}
 	tmUser.CreateAt = time.Now()
-	err = dao.TmUserImp.SaveTmUser(&tmUser)
+	err := dao.TmUserImp.SaveTmUser(&tmUser)
 	return err
 
 }
 
 // deleteOneTmUser 删除一条暂存用户信息
-func deleteOneTmUser(r *http.Request) error {
-	data, err := GetData(r)
-	fmt.Println(data)
-	if err != nil {
-		return err
-	}
+func deleteOneTmUser(r *http.Request, data string) error {
 	user := model.UserModel{}
 	if err := json.Unmarshal([]byte(data), &user); err != nil {
 		return err
 	}
-	err = dao.TmUserImp.ClearTmUser(user.Id)
+	err := dao.TmUserImp.ClearTmUser(user.Id)
 	user.Id = 0
 	// 存储到User表中
 

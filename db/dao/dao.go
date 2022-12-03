@@ -5,27 +5,33 @@ import (
 	"wxcloudrun-golang/db/model"
 )
 
-const tableName = "Counters"
+const tableName = "tm_user"
 
-// ClearCounter 清除Counter
-func (imp *CounterInterfaceImp) ClearCounter(id int32) error {
-	cli := db.Get()
-	return cli.Table(tableName).Delete(&model.CounterModel{Id: id}).Error
-}
-
-// UpsertCounter 更新/写入counter
-func (imp *CounterInterfaceImp) UpsertCounter(counter *model.CounterModel) error {
-	cli := db.Get()
-	return cli.Table(tableName).Save(counter).Error
-}
-
-// GetCounter 查询Counter
-func (imp *CounterInterfaceImp) GetCounter(id int32) (*model.CounterModel, error) {
+// GetTmUser TmUserInterfaceImp.GetTmUser 查询tm_user表里面的所有用户信息
+func (t TmUserInterfaceImp) GetTmUser() ([]model.TmUserModel, error) {
+	//TODO implement me
 	var err error
-	var counter = new(model.CounterModel)
+	var tmUserSlice = make([]model.TmUserModel, 0)
 
 	cli := db.Get()
-	err = cli.Table(tableName).Where("id = ?", id).First(counter).Error
+	err = cli.Table(tableName).Find(&tmUserSlice).Error
 
-	return counter, err
+	return tmUserSlice, err
+
+}
+
+// SaveTmUser TmUserInterfaceImp.SaveTmUser 存储一条用户信息
+func (t TmUserInterfaceImp) SaveTmUser(tmUser *model.TmUserModel) error {
+	var err error
+	cli := db.Get()
+	err = cli.Table(tableName).Save(tmUser).Error
+	return err
+
+}
+
+func (t TmUserInterfaceImp) ClearTmUser(id int32) error {
+	var err error
+	cli := db.Get()
+	err = cli.Table(tableName).Delete(&model.TmUserModel{Id: id}).Error
+	return err
 }

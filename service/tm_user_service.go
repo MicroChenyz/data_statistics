@@ -57,6 +57,7 @@ func getAllTmUser() ([]model.TmUserModel, error) {
 // modifyTmUser() 修改暂存用户信息操作
 func modifyTmUser(r *http.Request) error {
 	action, err := GetAction(r)
+	fmt.Println(action)
 	if err != nil {
 		return err
 	}
@@ -75,6 +76,7 @@ func modifyTmUser(r *http.Request) error {
 // addOneTmUser() 添加一条暂存用户信息
 func addOneTmUser(r *http.Request) error {
 	data, err := GetData(r)
+	fmt.Println(data)
 	if err != nil {
 		return err
 	}
@@ -91,6 +93,7 @@ func addOneTmUser(r *http.Request) error {
 // deleteOneTmUser 删除一条暂存用户信息
 func deleteOneTmUser(r *http.Request) error {
 	data, err := GetData(r)
+	fmt.Println(data)
 	if err != nil {
 		return err
 	}

@@ -86,13 +86,11 @@ func addOneTmUser(r *http.Request, data string) error {
 
 // deleteOneTmUser 删除一条暂存用户信息
 func deleteOneTmUser(r *http.Request, data string) error {
+
 	user := model.UserModel{}
 	if err := json.Unmarshal([]byte(data), &user); err != nil {
 		return err
 	}
-	err := dao.TmUserImp.ClearTmUser(user.Id)
-	user.Id = 0
-	// 存储到User表中
-
+	err := dao.TmUserImp.ClearTmUser(&user)
 	return err
 }

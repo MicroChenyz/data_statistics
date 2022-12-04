@@ -10,10 +10,3 @@ type TmUserModel struct {
 	CreateAt time.Time `gorm:"column:createAt" json:"createAt"`
 	Remark   string    `gorm:"column:remark" json:"remark"`
 }
-
-// UserModel 实际用户模型
-type UserModel struct {
-	Id         int32  `json:"id"`
-	OpenId     string `json:"openId"`
-	Permission string `json:"permission"`
-}

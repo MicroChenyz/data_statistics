@@ -5,4 +5,5 @@ type UserModel struct {
 	Id         int32  `gorm:"column:id" json:"id"`
 	OpenId     string `gorm:"column:openid" json:"openid"`
 	Permission string `gorm:"column:permission" json:"permission"`
+	IsAdmin    bool   `gorm:"column:isAdmin" json:"isAdmin"`
 }

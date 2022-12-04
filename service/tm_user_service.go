@@ -13,7 +13,6 @@ import (
 func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := &JsonResult{}
-	fmt.Println(r.Header)
 	if r.Method == http.MethodGet {
 		tmUsers, err := getAllTmUser()
 		if err != nil {
@@ -23,7 +22,8 @@ func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 			res.Data = tmUsers
 		}
 	} else if r.Method == http.MethodPost {
-		err := modifyTmUser(r)
+		openid := r.Header.Get("X-Wx-Openid")
+		err := modifyTmUser(r, openid)
 		if err != nil {
 			res.Code = -1
 			res.ErrorMsg = err.Error()
@@ -55,15 +55,15 @@ func getAllTmUser() ([]model.TmUserModel, error) {
 }
 
 // modifyTmUser() 修改暂存用户信息操作
-func modifyTmUser(r *http.Request) error {
+func modifyTmUser(r *http.Request, openid string) error {
 	action, data, err := GetAction(r)
 	if err != nil {
 		return err
 	}
 	if action == "add" {
-		err = addOneTmUser(r, data)
+		err = addOneTmUser(openid, data)
 	} else if action == "delete" {
-		err = deleteOneTmUser(r, data)
+		err = deleteOneTmUser(data)
 	} else {
 		err = fmt.Errorf("参数 action : %s 错误", action)
 	}
@@ -73,20 +73,20 @@ func modifyTmUser(r *http.Request) error {
 }
 
 // addOneTmUser() 添加一条暂存用户信息
-func addOneTmUser(r *http.Request, data string) error {
+func addOneTmUser(openid string, data string) error {
 	tmUser := model.TmUserModel{}
 	if err := json.Unmarshal([]byte(data), &tmUser); err != nil {
 		return err
 	}
 	tmUser.CreateAt = time.Now()
+	tmUser.OpenId = openid
 	err := dao.TmUserImp.SaveTmUser(&tmUser)
 	return err
 
 }
 
 // deleteOneTmUser 删除一条暂存用户信息
-func deleteOneTmUser(r *http.Request, data string) error {
-
+func deleteOneTmUser(data string) error {
 	user := model.UserModel{}
 	if err := json.Unmarshal([]byte(data), &user); err != nil {
 		return err

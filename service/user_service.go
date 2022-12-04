@@ -12,20 +12,24 @@ import (
 // UserHandler 实际用户接口
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	res := &JsonResult{}
+	openid := r.Header.Get("X-Wx-Openid")
+	pageString := r.URL.Query().Get("page")
+	pageSizeString := r.URL.Query().Get("pageSize")
 	if r.Method == http.MethodGet {
-		openid := r.URL.Query().Get("openid")
 		var err error
 		var user interface{}
-		if openid == "" {
-			pageString := r.URL.Query().Get("page")
-			pageSizeString := r.URL.Query().Get("pageSize")
-			page, err := strconv.Atoi(pageString)
-			pageSize, err := strconv.Atoi(pageSizeString)
-			if err == nil {
+		if pageString == "" {
+			// pageString获取不到，说明要根据openid查询用户数据
+			user, err = getUserByOpenId(openid)
+		} else {
+			page, err1 := strconv.Atoi(pageString)
+			pageSize, err2 := strconv.Atoi(pageSizeString)
+			if err1 != nil || err2 != nil {
+				res.Code = -1
+				res.ErrorMsg = err.Error()
+			} else {
 				user, err = getAllUser(page, pageSize)
 			}
-		} else {
-			user, err = getUserByOpenId(openid)
 		}
 		if err != nil {
 			res.Code = -1

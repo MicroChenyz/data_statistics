@@ -6,7 +6,6 @@ import "time"
 type TmUserModel struct {
 	Id       int32     `gorm:"column:id" json:"id"`
 	OpenId   string    `gorm:"column:openid" json:"openid"`
-	TelPhone string    `gorm:"column:telPhone" json:"telPhone"`
+	Username string    `gorm:"column:username" json:"username"`
 	CreateAt time.Time `gorm:"column:createAt" json:"createAt"`
-	Remark   string    `gorm:"column:remark" json:"remark"`
 }

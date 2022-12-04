@@ -13,7 +13,7 @@ import (
 func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := &JsonResult{}
-
+	fmt.Println(r.Header)
 	if r.Method == http.MethodGet {
 		tmUsers, err := getAllTmUser()
 		if err != nil {

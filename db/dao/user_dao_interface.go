@@ -7,7 +7,7 @@ type UserInterface interface {
 	SaveUser(user *model.UserModel) error
 	FindUserByOpenId(openId string) (model.UserModel, error)
 	FindAllUser(page int, pageSize int) (model.Pages, error)
-	ClearUser(id int32) error
+	ClearUser(id int) error
 }
 
 type UserInterfaceImp struct{}

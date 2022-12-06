@@ -15,6 +15,7 @@ func main() {
 	http.HandleFunc("/api/tm_user", service.TmUserHandler)
 	http.HandleFunc("/api/user", service.UserHandler)
 	http.HandleFunc("/api/client", service.ClientHandler)
+	http.HandleFunc("/api/stemming", service.StemmingHandler)
 
 	log.Fatal(http.ListenAndServe(":80", nil))
 

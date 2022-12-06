@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 	"wxcloudrun-golang/db/dao"
 	"wxcloudrun-golang/db/model"
@@ -13,14 +14,20 @@ import (
 func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := &JsonResult{}
+	pageString := r.URL.Query().Get("page")
+	pageSizeString := r.URL.Query().Get("pageSize")
 	if r.Method == http.MethodGet {
-		// get API
-		tmUsers, err := getAllTmUser()
+		// get API 分页查询数据
+		var err error
+		var data interface{}
+		if pageString != "" && pageSizeString != "" {
+			data, err = getTmUserByPages(pageString, pageSizeString)
+		}
 		if err != nil {
 			res.Code = -1
 			res.ErrorMsg = err.Error()
 		} else {
-			res.Data = tmUsers
+			res.Data = data
 		}
 	} else if r.Method == http.MethodPost {
 		openid := r.Header.Get("X-Wx-Openid")
@@ -46,12 +53,15 @@ func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // getAllTmUser() 返回所有的暂存用户
-func getAllTmUser() ([]model.TmUserModel, error) {
-	tmUsers, err := dao.TmUserImp.GetTmUser()
+func getTmUserByPages(pageString string, pageSizeString string) (model.TmUserPage, error) {
+	page, err := strconv.Atoi(pageString)
+	pageSize, err := strconv.Atoi(pageSizeString)
+	var tmUserPage model.TmUserPage
 	if err != nil {
-		return nil, err
+		return tmUserPage, err
 	}
-	return tmUsers, err
+	tmUserPage, err = dao.TmUserImp.GetTmUserByPages(page, pageSize)
+	return tmUserPage, err
 
 }
 
@@ -63,8 +73,8 @@ func modifyTmUser(r *http.Request, openid string) error {
 	}
 	if action == "add" {
 		err = addOneTmUser(openid, data)
-	} else if action == "delete" {
-		err = deleteOneTmUser(data)
+	} else if action == "update" {
+		err = addOneTmUserToUser(data)
 	} else {
 		err = fmt.Errorf("参数 action : %s 错误", action)
 	}
@@ -86,12 +96,12 @@ func addOneTmUser(openid string, data string) error {
 
 }
 
-// deleteOneTmUser 删除一条暂存用户信息
-func deleteOneTmUser(data string) error {
+// deleteOneTmUser 添加一条暂存用户信息到实际用户信息表中
+func addOneTmUserToUser(data string) error {
 	user := model.UserModel{}
 	if err := json.Unmarshal([]byte(data), &user); err != nil {
 		return err
 	}
-	err := dao.TmUserImp.ClearTmUser(&user)
+	err := dao.TmUserImp.UpdateTmUser(&user)
 	return err
 }

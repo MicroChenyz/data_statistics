@@ -7,15 +7,20 @@ import (
 
 const tmUserTableName = "tm_user"
 
-// GetTmUser TmUserInterfaceImp.GetTmUser 查询tm_user表里面的所有用户信息
-func (t TmUserInterfaceImp) GetTmUser() ([]model.TmUserModel, error) {
+// GetTmUserByPages TmUserInterfaceImp.GetTmUser 查询tm_user表里面的所有用户信息
+func (t TmUserInterfaceImp) GetTmUserByPages(page int, pageSize int) (model.TmUserPage, error) {
 	var err error
-	var tmUserSlice = make([]model.TmUserModel, 0)
+	var tmUserPage model.TmUserPage
 
 	cli := db.Get()
-	err = cli.Table(tmUserTableName).Find(&tmUserSlice).Error
+	offset := (page - 1) * pageSize
+	err = cli.Table(tmUserTableName).
+		Order("id asc").
+		Limit(pageSize).Offset(offset).Scan(&tmUserPage.Data).
+		Limit(-1).Offset(-1).
+		Count(&tmUserPage.Total).Error
 
-	return tmUserSlice, err
+	return tmUserPage, err
 
 }
 
@@ -28,7 +33,7 @@ func (t TmUserInterfaceImp) SaveTmUser(tmUser *model.TmUserModel) error {
 
 }
 
-func (t TmUserInterfaceImp) ClearTmUser(user *model.UserModel) error {
+func (t TmUserInterfaceImp) UpdateTmUser(user *model.UserModel) error {
 	var err error
 	cli := db.Get()
 	tx := cli.Begin()

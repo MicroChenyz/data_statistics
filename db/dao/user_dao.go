@@ -23,7 +23,7 @@ func (u UserInterfaceImp) FindUserByOpenId(openId string) (model.UserModel, erro
 	return user, err
 }
 
-func (u UserInterfaceImp) ClearUser(id int32) error {
+func (u UserInterfaceImp) ClearUser(id int) error {
 	//TODO implement me
 	var err error
 	cli := db.Get()

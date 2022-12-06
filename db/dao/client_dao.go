@@ -37,6 +37,9 @@ func (c ClientInterfaceImp) GetClientByOpenId(openid string) ([]model.ClientResp
 	var clients = make([]model.Client, 0)
 	cli := db.Get()
 	err = cli.Table(clientTableName).Where("openid=?", openid).Find(&clients).Error
+	if err != nil {
+		return nil, err
+	}
 	for i := range clients {
 		name := clients[i].ClientName + clients[i].StoveNum
 		var clientRes = model.ClientResponse{Id: clients[i].Id, Name: name}

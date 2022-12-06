@@ -30,7 +30,6 @@ func GetAction(r *http.Request) (string, string, error) {
 	if body == nil {
 		return actionMsg, "", nil
 	}
-
 	dataType, _ := json.Marshal(data)
 	dataString := string(dataType)
 

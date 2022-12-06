@@ -12,7 +12,6 @@ type Client struct {
 	IronNotchNum int       `gorm:"column:iron_notch_num" json:"iron_notch_num"`
 	MudType      string    `gorm:"column:mud_type" json:"mud_type"`
 	CreateTime   time.Time `gorm:"column:create_time" json:"create_time"`
-	UserId       int32     `gorm:"column:user_id" json:"user_id"`
 }
 
 type ClientResponse struct {

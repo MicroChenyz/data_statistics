@@ -38,11 +38,11 @@ func (c ClientInterfaceImp) GetClientByUserid(userId int32) ([]model.ClientRespo
 	return clientResponse, err
 }
 
-func (c ClientInterfaceImp) GetClientById(id int32) (model.Client, error) {
+func (c ClientInterfaceImp) GetClientById(openid string) (model.Client, error) {
 	//TODO implement me
 	var err error
 	var client = model.Client{}
 	cli := db.Get()
-	err = cli.Table(clientTableName).Where("id=?", id).Find(&client).Error
+	err = cli.Table(clientTableName).Where("openid=?", openid).Find(&client).Error
 	return client, err
 }

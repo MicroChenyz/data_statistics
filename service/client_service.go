@@ -13,18 +13,16 @@ import (
 func ClientHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := &JsonResult{}
+	openid := r.Header.Get("X-Wx-Openid")
 	if r.Method == http.MethodGet {
 		// Get方法用户获取客户信息
-		userIdString := r.URL.Query().Get("userid")
 		clientIdString := r.URL.Query().Get("clientid")
 		var err error
 		var client interface{}
-		if userIdString != "" {
-			client, err = getClientByUserId(userIdString)
-		} else if clientIdString != "" {
-			client, err = getClientByClientId(clientIdString)
+		if clientIdString != "" {
+			client, err = getClientByOpenId(clientIdString)
 		} else {
-			err = fmt.Errorf("参数不匹配")
+			client, err = getClientByOpenId(openid)
 		}
 		if err != nil {
 			res.Code = -1
@@ -82,7 +80,6 @@ func addOneClient(data string) error {
 }
 
 func deleteOneClient(data string) error {
-	fmt.Println(data)
 	type clientId struct {
 		Id int32 `json:"id"`
 	}
@@ -94,15 +91,10 @@ func deleteOneClient(data string) error {
 	return err
 }
 
-func getClientByClientId(clientIdString string) (model.Client, error) {
+func getClientByOpenId(openid string) (model.Client, error) {
 	var client model.Client
-	clientId, err := strconv.Atoi(clientIdString)
-	if err != nil {
-		return client, err
-	}
-	client, err = dao.ClientImp.GetClientById(int32(clientId))
+	client, err := dao.ClientImp.GetClientById(openid)
 	return client, err
-
 }
 
 func getClientByUserId(userIdString string) ([]model.ClientResponse, error) {

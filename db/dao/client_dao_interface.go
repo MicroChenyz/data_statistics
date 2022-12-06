@@ -7,7 +7,7 @@ type ClientInterface interface {
 	SaveClient(client *model.Client) error
 	ClearClient(id int32) error
 	GetClientByUserid(userId int32) ([]model.ClientResponse, error)
-	GetClientById(id int32) (model.Client, error)
+	GetClientById(openid string) (model.Client, error)
 }
 
 type ClientInterfaceImp struct{}

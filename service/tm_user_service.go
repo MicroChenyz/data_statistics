@@ -14,6 +14,7 @@ func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := &JsonResult{}
 	if r.Method == http.MethodGet {
+		// get API
 		tmUsers, err := getAllTmUser()
 		if err != nil {
 			res.Code = -1

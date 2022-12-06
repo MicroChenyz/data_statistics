@@ -8,8 +8,8 @@ type UserModel struct {
 	IsAdmin    bool   `gorm:"column:isAdmin" json:"isAdmin"`
 }
 
-// Pages 分页存储用户模型
-type Pages struct {
+// UserPage 分页存储用户模型
+type UserPage struct {
 	Page     int         `json:"page"`
 	PageSize int         `json:"pageSize"`
 	Total    int64       `json:"total"`

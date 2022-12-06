@@ -6,8 +6,9 @@ import "wxcloudrun-golang/db/model"
 type UserInterface interface {
 	SaveUser(user *model.UserModel) error
 	FindUserByOpenId(openId string) (model.UserModel, error)
-	FindAllUser(page int, pageSize int) (model.Pages, error)
-	ClearUser(id int) error
+	FindUserByPages(page int, pageSize int) (model.UserPage, error)
+	FindAllUser() ([]model.UserModel, error)
+	DeleteUser(openid string) error
 }
 
 type UserInterfaceImp struct{}

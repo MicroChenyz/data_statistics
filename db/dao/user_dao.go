@@ -23,18 +23,18 @@ func (u UserInterfaceImp) FindUserByOpenId(openId string) (model.UserModel, erro
 	return user, err
 }
 
-func (u UserInterfaceImp) ClearUser(id int) error {
+func (u UserInterfaceImp) DeleteUser(openid string) error {
 	//TODO implement me
 	var err error
 	cli := db.Get()
-	err = cli.Table(userTableName).Delete(&model.UserModel{Id: id}).Error
+	err = cli.Table(userTableName).Where("openid=?", openid).Delete(&model.UserModel{}).Error
 	return err
 }
 
-func (u UserInterfaceImp) FindAllUser(page int, pageSize int) (model.Pages, error) {
+func (u UserInterfaceImp) FindUserByPages(page int, pageSize int) (model.UserPage, error) {
 	//TODO implement me
 	var err error
-	var pages = model.Pages{Page: page, PageSize: pageSize}
+	var pages = model.UserPage{Page: page, PageSize: pageSize}
 
 	cli := db.Get()
 	offset := (page - 1) * pageSize
@@ -46,4 +46,14 @@ func (u UserInterfaceImp) FindAllUser(page int, pageSize int) (model.Pages, erro
 		Limit(-1).Offset(-1).Count(&pages.Total).Error
 
 	return pages, err
+}
+
+func (u UserInterfaceImp) FindAllUser() ([]model.UserModel, error) {
+	var err error
+	var user = make([]model.UserModel, 0)
+
+	cli := db.Get()
+	err = cli.Table(userTableName).Find(&user).Error
+
+	return user, err
 }

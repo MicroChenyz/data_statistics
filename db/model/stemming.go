@@ -4,8 +4,8 @@ import "time"
 
 type Stemming struct {
 	Id                    int       `gorm:"column:id" json:"id"`
-	StartTime             time.Time `gorm:"column:start_time" json:"start_time"`
-	EndTime               time.Time `gorm:"column:end_time" json:"end_time"`
+	StartTime             string    `gorm:"column:start_time" json:"start_time"`
+	EndTime               string    `gorm:"column:end_time" json:"end_time"`
 	PreviousPeriodSurplus float64   `gorm:"column:previous_period_surplus" json:"previous_period_surplus"`
 	CurrentPeriodAog      float64   `gorm:"column:current_period_aog" json:"current_period_aog"`
 	PeriodOfConsumption   float64   `gorm:"column:period_of_consumption" json:"period_of_consumption"`
@@ -27,8 +27,8 @@ type Stemming struct {
 
 type StemmingResponse struct {
 	Id         int       `json:"id"`
-	StartTime  time.Time `json:"start_time"`
-	EndTime    time.Time `json:"end_time"`
+	StartTime  string    `json:"start_time"`
+	EndTime    string    `json:"end_time"`
 	CreateTime time.Time `json:"create_time"`
 	ModifyTime time.Time `json:"modify_time"`
 }

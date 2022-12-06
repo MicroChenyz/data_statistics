@@ -74,11 +74,19 @@ func addOneStemming(data string, openid string) error {
 	stemming.ModifyTime = time.Now()
 	// 需要计算的内容
 	stemming.PeriodOfConsumption = stemming.PreviousPeriodSurplus + stemming.CurrentPeriodAog - stemming.CurrentResidue
-	days := stemming.EndTime.Sub(stemming.StartTime).Hours()/24 + 1
+
+	startTime := stemming.StartTime + " 00:00:00"
+	endTime := stemming.EndTime + " 00:00:00"
+	st, err := time.ParseInLocation("2006-01-02 15:04:05", startTime, time.Local)
+	et, err := time.ParseInLocation("2006-01-02 15:04:05", endTime, time.Local)
+	if err != nil {
+		return err
+	}
+	days := et.Sub(st).Hours()/24 + 1
 	stemming.DailyOfConsumption = stemming.PeriodOfConsumption / days
 	stemming.PeriodIronMudConsume = stemming.PeriodOfConsumption * 1000 / stemming.PeriodSumOfIron
 	stemming.ConversionPrice = stemming.ContractPrice * stemming.PeriodIronMudConsume / 1000
-	err := dao.StemmingImp.SaveStemming(&stemming)
+	err = dao.StemmingImp.SaveStemming(&stemming)
 	return err
 }
 
@@ -92,12 +100,19 @@ func updateOneStemming(data string, openid string) error {
 	stemming.OpenId = openid
 	// 需要计算的内容
 	stemming.PeriodOfConsumption = stemming.PreviousPeriodSurplus + stemming.CurrentPeriodAog - stemming.CurrentResidue
-	days := stemming.EndTime.Sub(stemming.StartTime).Hours() / 24
+	startTime := stemming.StartTime + " 00:00:00"
+	endTime := stemming.EndTime + " 00:00:00"
+	st, err := time.ParseInLocation("2006-01-02 15:04:05", startTime, time.Local)
+	et, err := time.ParseInLocation("2006-01-02 15:04:05", endTime, time.Local)
+	if err != nil {
+		return err
+	}
+	days := et.Sub(st).Hours()/24 + 1
 	stemming.DailyOfConsumption = stemming.PeriodOfConsumption / days
 	stemming.PeriodIronMudConsume = stemming.PeriodOfConsumption * 1000 / stemming.PeriodSumOfIron
 	stemming.ConversionPrice = stemming.ContractPrice * stemming.PeriodIronMudConsume / 1000
 	fmt.Println(stemming)
-	err := dao.StemmingImp.UpdateStemmingById(&stemming)
+	err = dao.StemmingImp.UpdateStemmingById(&stemming)
 	return err
 }
 

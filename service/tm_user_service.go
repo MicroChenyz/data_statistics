@@ -22,6 +22,8 @@ func TmUserHandler(w http.ResponseWriter, r *http.Request) {
 		var data interface{}
 		if pageString != "" && pageSizeString != "" {
 			data, err = getTmUserByPages(pageString, pageSizeString)
+		} else {
+			data, err = getAllTmUser()
 		}
 		if err != nil {
 			res.Code = -1
@@ -65,6 +67,12 @@ func getTmUserByPages(pageString string, pageSizeString string) (model.TmUserPag
 
 }
 
+func getAllTmUser() ([]model.TmUserModel, error) {
+	var tmUsers = make([]model.TmUserModel, 0)
+	tmUsers, err := dao.TmUserImp.GetAllTmUser()
+	return tmUsers, err
+}
+
 // modifyTmUser() 修改暂存用户信息操作
 func modifyTmUser(r *http.Request, openid string) error {
 	action, data, err := GetAction(r)
@@ -74,7 +82,9 @@ func modifyTmUser(r *http.Request, openid string) error {
 	if action == "add" {
 		err = addOneTmUser(openid, data)
 	} else if action == "update" {
-		err = addOneTmUserToUser(data)
+		err = addOneTmUserToUser(openid, data)
+	} else if action == "delete" {
+		err = deleteOneTmUser(openid)
 	} else {
 		err = fmt.Errorf("参数 action : %s 错误", action)
 	}
@@ -96,12 +106,18 @@ func addOneTmUser(openid string, data string) error {
 
 }
 
-// deleteOneTmUser 添加一条暂存用户信息到实际用户信息表中
-func addOneTmUserToUser(data string) error {
+// addOneTmUserToUser 添加一条暂存用户信息到实际用户信息表中
+func addOneTmUserToUser(openid string, data string) error {
 	user := model.UserModel{}
 	if err := json.Unmarshal([]byte(data), &user); err != nil {
 		return err
 	}
+	user.OpenId = openid
 	err := dao.TmUserImp.UpdateTmUser(&user)
+	return err
+}
+
+func deleteOneTmUser(openid string) error {
+	err := dao.TmUserImp.DeleteTmUser(openid)
 	return err
 }

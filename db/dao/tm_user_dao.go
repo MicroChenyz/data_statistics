@@ -10,7 +10,7 @@ const tmUserTableName = "tm_user"
 // GetTmUserByPages TmUserInterfaceImp.GetTmUser 查询tm_user表里面的所有用户信息
 func (t TmUserInterfaceImp) GetTmUserByPages(page int, pageSize int) (model.TmUserPage, error) {
 	var err error
-	var tmUserPage model.TmUserPage
+	var tmUserPage = model.TmUserPage{Page: page, PageSize: pageSize}
 
 	cli := db.Get()
 	offset := (page - 1) * pageSize
@@ -22,6 +22,14 @@ func (t TmUserInterfaceImp) GetTmUserByPages(page int, pageSize int) (model.TmUs
 
 	return tmUserPage, err
 
+}
+
+func (t TmUserInterfaceImp) GetAllTmUser() ([]model.TmUserModel, error) {
+	var err error
+	var tmUsers = make([]model.TmUserModel, 0)
+	cli := db.Get()
+	err = cli.Table(tmUserTableName).Find(&tmUsers).Error
+	return tmUsers, err
 }
 
 // SaveTmUser TmUserInterfaceImp.SaveTmUser 存储一条用户信息
@@ -48,13 +56,13 @@ func (t TmUserInterfaceImp) UpdateTmUser(user *model.UserModel) error {
 		return err
 	}
 
-	err = tx.Table(tmUserTableName).Delete(&model.TmUserModel{Id: user.Id}).Error
+	err = t.DeleteTmUser(user.OpenId)
 	if err != nil {
 		return err
 	}
 
 	user.Id = 0
-	err = tx.Table(userTableName).Save(user).Error
+	err = UserImp.SaveUser(user)
 	if err != nil {
 		return err
 	}
@@ -68,4 +76,12 @@ func (t TmUserInterfaceImp) GetTmUserByOpenid(openid string) (model.TmUserModel,
 	cli := db.Get()
 	err = cli.Table(tmUserTableName).Where("openid=?", openid).First(&tmUser).Error
 	return tmUser, err
+}
+
+func (t TmUserInterfaceImp) DeleteTmUser(openid string) error {
+	//TODO implement me
+	var err error
+	cli := db.Get()
+	err = cli.Table(tmUserTableName).Where("openid=?", openid).Delete(&model.TmUserModel{}).Error
+	return err
 }

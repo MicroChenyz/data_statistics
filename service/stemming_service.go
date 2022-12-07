@@ -110,7 +110,12 @@ func updateOneStemming(data string, openid string) error {
 	days := et.Sub(st).Hours()/24 + 1
 	stemming.DailyOfConsumption = stemming.PeriodOfConsumption / days
 	stemming.PeriodIronMudConsume = stemming.PeriodOfConsumption * 1000 / stemming.PeriodSumOfIron
-	stemming.ConversionPrice = stemming.ContractPrice * stemming.PeriodIronMudConsume / 1000
+	if stemming.ContractPrice > 999 {
+		stemming.ConversionPrice = stemming.ContractPrice * stemming.PeriodIronMudConsume / 1000
+	} else if stemming.ContractPrice < 10 {
+		stemming.ConversionPrice = stemming.ContractPrice * 1000 / stemming.PeriodIronMudConsume
+	}
+
 	fmt.Println(stemming)
 	err = dao.StemmingImp.UpdateStemmingById(&stemming)
 	return err

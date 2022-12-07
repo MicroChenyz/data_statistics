@@ -23,10 +23,10 @@ func ClientHandler(w http.ResponseWriter, r *http.Request) {
 		// 分页获取所有客户信息
 		if pageString != "" && pageSizeString != "" {
 			data, err = getClientByPages(pageString, pageSizeString)
-		} else if openid != "" {
-			data, err = getClientByOpenId(openid)
 		} else if idString != "" {
 			data, err = getClientByClientId(idString)
+		} else if openid != "" {
+			data, err = getClientByOpenId(openid)
 		} else {
 			data, err = getAllClient()
 		}

@@ -4,6 +4,7 @@ package model
 type UserModel struct {
 	Id         int    `gorm:"column:id" json:"id"`
 	OpenId     string `gorm:"column:openid" json:"openid"`
+	Username   string `gorm:"column:username" json:"username"`
 	Permission string `gorm:"column:permission" json:"permission"`
 	IsAdmin    bool   `gorm:"column:isAdmin" json:"isAdmin"`
 }
